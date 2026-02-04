@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Fishtank - Relaxing Screensaver</title>
+    <meta name="description" content="A calming virtual fishtank screensaver. Watch colorful fish swim around your screen.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            background: linear-gradient(180deg, 
+                #001a33 0%, 
+                #003366 30%, 
+                #004080 60%, 
+                #0059b3 100%);
+            height: 100vh;
+            cursor: none;
+        }
+
+        body:hover {
+            cursor: default;
+        }
+
+        .tank {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Water surface effect */
+        .surface {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(180deg, 
+                rgba(255,255,255,0.3) 0%, 
+                rgba(255,255,255,0.1) 50%,
+                transparent 100%);
+            animation: wave 3s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(5px); }
+        }
+
+        /* Light rays from surface */
+        .light-rays {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                180deg,
+                transparent 0px,
+                rgba(255,255,255,0.03) 2px,
+                transparent 4px
+            );
+            animation: shimmer 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Bubbles */
+        .bubble {
+            position: absolute;
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(255,255,255,0.8) 0%, 
+                rgba(255,255,255,0.4) 50%,
+                rgba(255,255,255,0.1) 100%);
+            border-radius: 50%;
+            animation: rise linear infinite;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(20px);
+                opacity: 0;
+            }
+        }
+
+        /* Fish */
+        .fish {
+            position: absolute;
+            font-size: 40px;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+            cursor: pointer;
+        }
+
+        .fish:hover {
+            transform: scale(1.2);
+        }
+
+        .fish.left {
+            transform: scaleX(-1);
+        }
+
+        .fish.left:hover {
+            transform: scaleX(-1) scale(1.2);
+        }
+
+        /* Seaweed */
+        .seaweed {
+            position: absolute;
+            bottom: 0;
+            width: 20px;
+            background: linear-gradient(180deg, #228B22 0%, #006400 100%);
+            border-radius: 50% 50% 0 0;
+            transform-origin: bottom center;
+            animation: sway 4s ease-in-out infinite;
+        }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        /* Sand/ground */
+        .ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(180deg, 
+                #d4a574 0%, 
+                #c19a6b 50%,
+                #a0826d 100%);
+            border-radius: 50% 50% 0 0 / 20px 20px 0 0;
+        }
+
+        /* Rocks */
+        .rock {
+            position: absolute;
+            bottom: 30px;
+            background: linear-gradient(135deg, #696969 0%, #4a4a4a 50%, #333 100%);
+            border-radius: 50% 60% 40% 50%;
+        }
+
+        /* Decorations */
+        .decoration {
+            position: absolute;
+            bottom: 50px;
+        }
+
+        /* Controls */
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 100;
+        }
+
+        body:hover .controls {
+            opacity: 1;
+        }
+
+        .controls button {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            transition: background 0.2s;
+        }
+
+        .controls button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Fullscreen hint */
+        .hint {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.6);
+            font-family: system-ui, sans-serif;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        body:hover .hint {
+            opacity: 1;
+        }
+
+        /* Treasure chest */
+        .chest {
+            position: absolute;
+            bottom: 55px;
+            font-size: 50px;
+        }
+
+        /* Coral */
+        .coral {
+            position: absolute;
+            bottom: 50px;
+            font-size: 45px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tank" id="tank">
+        <div class="surface"></div>
+        <div class="light-rays"></div>
+        <div class="ground"></div>
+    </div>
+
+    <div class="hint">Press F for fullscreen • Click fish to feed</div>
+
+    <div class="controls">
+        <button onclick="addFish()">🐟 Add Fish</button>
+        <button onclick="toggleFullscreen()">⛶ Fullscreen</button>
+        <button onclick="feedFish()">🍞 Feed</button>
+    </div>
+
+    <script>
+        const tank = document.getElementById('tank');
+        const fishEmojis = ['🐟', '🐠', '🐡', '🦈', '🐙', '🦑', '🦐', '🦀', '🐢', '🐬'];
+        const fishColors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3', '#F38181', '#AA96DA', '#FCBAD3'];
+        let fishCount = 0;
+        const maxFish = 30;
+        const fish = [];
+
+        // Create seaweed
+        function createSeaweed() {
+            for (let i = 0; i < 12; i++) {
+                const seaweed = document.createElement('div');
+                seaweed.className = 'seaweed';
+                seaweed.style.left = (5 + Math.random() * 90) + '%';
+                seaweed.style.height = (80 + Math.random() * 120) + 'px';
+                seaweed.style.animationDelay = (Math.random() * 2) + 's';
+                seaweed.style.opacity = 0.7 + Math.random() * 0.3;
+                tank.appendChild(seaweed);
+            }
+        }
+
+        // Create rocks
+        function createRocks() {
+            for (let i = 0; i < 8; i++) {
+                const rock = document.createElement('div');
+                rock.className = 'rock';
+                rock.style.left = (Math.random() * 90) + '%';
+                rock.style.width = (30 + Math.random() * 50) + 'px';
+                rock.style.height = (20 + Math.random() * 30) + 'px';
+                tank.appendChild(rock);
+            }
+        }
+
+        // Create decorations
+        function createDecorations() {
+            // Treasure chest
+            const chest = document.createElement('div');
+            chest.className = 'chest';
+            chest.textContent = '🧰';
+            chest.style.left = '15%';
+            tank.appendChild(chest);
+
+            // Coral
+            const coralPositions = ['30%', '50%', '70%', '85%'];
+            const coralTypes = ['🪸', '🌿', '🪨', '⚓'];
+            coralPositions.forEach((pos, i) => {
+                const coral = document.createElement('div');
+                coral.className = 'coral';
+                coral.textContent = coralTypes[i];
+                coral.style.left = pos;
+                tank.appendChild(coral);
+            });
+        }
+
+        // Create bubbles
+        function createBubble() {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.style.left = (Math.random() * 100) + '%';
+            bubble.style.bottom = '60px';
+            const size = 5 + Math.random() * 15;
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.animationDuration = (4 + Math.random() * 4) + 's';
+            tank.appendChild(bubble);
+
+            setTimeout(() => bubble.remove(), 8000);
+        }
+
+        // Fish class
+        class Fish {
+            constructor(emoji, x, y) {
+                this.element = document.createElement('div');
+                this.element.className = 'fish';
+                this.element.textContent = emoji;
+                this.element.style.fontSize = (30 + Math.random() * 30) + 'px';
+                
+                this.x = x || Math.random() * (window.innerWidth - 100);
+                this.y = y || 100 + Math.random() * (window.innerHeight - 250);
+                this.vx = (Math.random() - 0.5) * 3;
+                this.vy = (Math.random() - 0.5) * 1;
+                this.targetX = null;
+                this.targetY = null;
+
+                this.element.style.left = this.x + 'px';
+                this.element.style.top = this.y + 'px';
+                
+                if (this.vx < 0) {
+                    this.element.classList.add('left');
+                }
+
+                this.element.addEventListener('click', () => this.scared());
+                
+                tank.appendChild(this.element);
+            }
+
+            scared() {
+                // Fish darts away when clicked
+                this.vx = (Math.random() - 0.5) * 10;
+                this.vy = (Math.random() - 0.5) * 5;
+            }
+
+            goTo(x, y) {
+                this.targetX = x;
+                this.targetY = y;
+            }
+
+            update() {
+                // If has target, move toward it
+                if (this.targetX !== null) {
+                    const dx = this.targetX - this.x;
+                    const dy = this.targetY - this.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if (dist < 50) {
+                        this.targetX = null;
+                        this.targetY = null;
+                    } else {
+                        this.vx += (dx / dist) * 0.2;
+                        this.vy += (dy / dist) * 0.2;
+                    }
+                }
+
+                // Random direction changes
+                if (Math.random() < 0.02) {
+                    this.vx += (Math.random() - 0.5) * 0.5;
+                    this.vy += (Math.random() - 0.5) * 0.3;
+                }
+
+                // Speed limits
+                const maxSpeed = 3;
+                const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                if (speed > maxSpeed) {
+                    this.vx = (this.vx / speed) * maxSpeed;
+                    this.vy = (this.vy / speed) * maxSpeed;
+                }
+
+                // Friction
+                this.vx *= 0.99;
+                this.vy *= 0.99;
+
+                // Update position
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Boundaries
+                const margin = 50;
+                if (this.x < margin) { this.x = margin; this.vx *= -1; }
+                if (this.x > window.innerWidth - margin) { this.x = window.innerWidth - margin; this.vx *= -1; }
+                if (this.y < 80) { this.y = 80; this.vy *= -1; }
+                if (this.y > window.innerHeight - 150) { this.y = window.innerHeight - 150; this.vy *= -1; }
+
+                // Update direction
+                if (this.vx > 0.1) {
+                    this.element.classList.remove('left');
+                } else if (this.vx < -0.1) {
+                    this.element.classList.add('left');
+                }
+
+                // Apply position
+                this.element.style.left = this.x + 'px';
+                this.element.style.top = this.y + 'px';
+            }
+        }
+
+        // Add fish
+        function addFish() {
+            if (fish.length < maxFish) {
+                const emoji = fishEmojis[Math.floor(Math.random() * fishEmojis.length)];
+                fish.push(new Fish(emoji));
+                fishCount++;
+            }
+        }
+
+        // Feed fish - all fish swim to center
+        function feedFish() {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 3;
+            
+            // Create food particle
+            const food = document.createElement('div');
+            food.textContent = '🍞';
+            food.style.position = 'absolute';
+            food.style.left = centerX + 'px';
+            food.style.top = '50px';
+            food.style.fontSize = '30px';
+            food.style.transition = 'top 3s ease-in';
+            food.style.zIndex = '50';
+            tank.appendChild(food);
+            
+            setTimeout(() => food.style.top = centerY + 'px', 100);
+            setTimeout(() => food.remove(), 3000);
+            
+            // Fish swim to food
+            fish.forEach(f => {
+                f.goTo(centerX + (Math.random() - 0.5) * 100, centerY + (Math.random() - 0.5) * 100);
+            });
+        }
+
+        // Fullscreen
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+            if (e.key === ' ') feedFish();
+            if (e.key === '+' || e.key === '=') addFish();
+        });
+
+        // Animation loop
+        function animate() {
+            fish.forEach(f => f.update());
+            requestAnimationFrame(animate);
+        }
+
+        // Initialize
+        createSeaweed();
+        createRocks();
+        createDecorations();
+        
+        // Start with some fish
+        for (let i = 0; i < 8; i++) {
+            addFish();
+        }
+
+        // Bubbles
+        setInterval(createBubble, 1000);
+
+        // Start animation
+        animate();
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            fish.forEach(f => {
+                if (f.x > window.innerWidth - 50) f.x = window.innerWidth - 100;
+                if (f.y > window.innerHeight - 150) f.y = window.innerHeight - 200;
+            });
+        });
+    </script>
+</body>
+</html>
