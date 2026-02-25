@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="water" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#001a33"/>
+      <stop offset="50%" style="stop-color:#003366"/>
+      <stop offset="100%" style="stop-color:#0059b3"/>
+    </linearGradient>
+    <linearGradient id="fish1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b35"/>
+      <stop offset="100%" style="stop-color:#f7931e"/>
+    </linearGradient>
+    <linearGradient id="fish2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4ecdc4"/>
+      <stop offset="100%" style="stop-color:#44a08d"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background water -->
+  <rect width="64" height="64" rx="8" fill="url(#water)"/>
+  
+  <!-- Water surface shimmer -->
+  <rect x="0" y="0" width="64" height="8" rx="8" fill="rgba(255,255,255,0.2)"/>
+  
+  <!-- Bubbles -->
+  <circle cx="12" cy="45" r="2" fill="rgba(255,255,255,0.3)"/>
+  <circle cx="15" cy="38" r="1.5" fill="rgba(255,255,255,0.25)"/>
+  <circle cx="52" cy="50" r="1.8" fill="rgba(255,255,255,0.3)"/>
+  
+  <!-- Orange fish (main) -->
+  <ellipse cx="32" cy="28" rx="12" ry="7" fill="url(#fish1)"/>
+  <polygon points="44,28 52,22 52,34" fill="url(#fish1)"/>
+  <circle cx="25" cy="26" r="2" fill="#333"/>
+  <circle cx="25.5" cy="25.5" r="0.8" fill="white"/>
+  
+  <!-- Teal fish (smaller) -->
+  <ellipse cx="24" cy="44" rx="8" ry="5" fill="url(#fish2)"/>
+  <polygon points="32,44 38,40 38,48" fill="url(#fish2)"/>
+  <circle cx="19" cy="43" r="1.5" fill="#333"/>
+  <circle cx="19.3" cy="42.7" r="0.5" fill="white"/>
+  
+  <!-- Seaweed -->
+  <path d="M8 64 Q10 52 8 44 Q6 36 10 28" stroke="#2d5a27" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M54 64 Q52 54 56 46 Q60 38 54 30" stroke="#3d7a37" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  
+  <!-- Sandy bottom hint -->
+  <rect x="0" y="58" width="64" height="6" rx="0 0 8 8" fill="rgba(194,178,128,0.3)"/>
+</svg>

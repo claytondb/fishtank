@@ -1,0 +1,21 @@
+{
+  "name": "Virtual Fishtank",
+  "short_name": "Fishtank",
+  "description": "A calming virtual fishtank screensaver. Watch colorful fish swim around your screen.",
+  "start_url": "/index.html",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#001a33",
+  "theme_color": "#003366",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["entertainment", "lifestyle"],
+  "related_applications": [],
+  "prefer_related_applications": false
+}
