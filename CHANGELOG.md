@@ -2,6 +2,18 @@
 
 All notable changes to Virtual Fishtank.
 
+## [1.2.0] - 2025-02-25
+
+### Added
+- **PWA Support** - App is now installable on desktop and mobile
+- Web App Manifest with fullscreen display mode
+- Custom favicon.svg for PWA icon
+- Meta tags for improved sharing (OpenGraph, Twitter)
+
+### Improved
+- Better mobile experience when installed as app
+- Offline-capable (no external dependencies needed)
+
 ## [1.1.0] - 2025-02-10
 
 ### Added
